@@ -17,11 +17,13 @@ const crawlAllData = async () => {
     const fs = require('fs');
     const workSheetName = "Sheet1";
 
-    const page = await browser.newPage();
-    await page.goto(`${link.path}`);
+    let check = true;
+    // const page = await browser.newPage();
+    // await page.goto(`${link.path}`);
 
     const source = [];
     let faileds = [];
+    let page;
 
     await wb.xlsx.readFile(filePath).then(async function () {
         var sh = wb.getWorksheet(workSheetName);
@@ -34,6 +36,11 @@ const crawlAllData = async () => {
             if (!!sh.getRow(i).getCell(1).value) {
                 const value1 = sh.getRow(i).getCell(1).value;
                 const value2 = sh.getRow(i).getCell(2).value;
+                if (!!check) {
+                    page = await browser.newPage();
+                    await page.goto(`${link.path}`);
+                    check = false;
+                }
                 try {
                     console.log(`dang xu ly dong so ${i}.`)
                     await page.waitForSelector('#root > div.apps--Wrapper.theme--light.Apps-sc-1153uyw-0.erOYeV > div.Content-sc-1lmz432-0.eLWBLy > main > div.Accounts-sc-mp0ofd-0.kiegNm > div:nth-child(3) > div > button:nth-child(1)')
@@ -74,6 +81,14 @@ const crawlAllData = async () => {
 
                     // save
                     await page.click('body > div.theme--light.ui--Modal.Base-sc-190q8hp-0.cZmPFb.Create-sc-j2eorn-0.dRxZOZ.size-large > div.ui--Modal__body > div.Actions-sc-16t6dp8-0.fvEGHv > div > button:nth-child(2)');
+
+                    if (i % 5 == 0 && !check) {
+                        check = true;
+
+                        // Đóng tab chrome
+                        await page.close();
+                    }
+
                 } catch (error) {
                     console.log(error.message)
                     faileds.push({
