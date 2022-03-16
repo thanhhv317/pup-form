@@ -68,15 +68,15 @@ const crawlAllData = async () => {
                     // next
                     await page.click("body > div.theme--light.ui--Modal.Base-sc-190q8hp-0.cZmPFb.Create-sc-j2eorn-0.dRxZOZ.size-large > div.ui--Modal__body > div.Actions-sc-16t6dp8-0.fvEGHv > div > button:nth-child(2)");
 
-                    const partialSeed = await page.evaluate(() => {
-                        return document.querySelector('body > div.theme--light.ui--Modal.Base-sc-190q8hp-0.cZmPFb.Create-sc-j2eorn-0.dRxZOZ.size-large > div.ui--Modal__body > div.Content-sc-1yxi1dg-0.hWVvEv.ui--Modal__Content > div.Content-sc-1yxi1dg-0.hWVvEv.ui--Modal__Content > div > div:nth-child(1) > div:nth-child(1) > div > div').textContent;
+                    const walletAddress = await page.evaluate(() => {
+                        return document.querySelector('body > div.theme--light.ui--Modal.Base-sc-190q8hp-0.cZmPFb.Create-sc-j2eorn-0.dRxZOZ.size-large > div.ui--Modal__body > div.Content-sc-1yxi1dg-0.hWVvEv.ui--Modal__Content > div:nth-child(1) > div > div > div.ui--Row-base > div.ui--Row-details > div').textContent;
                     });
 
                     source.push({
                         username: value1.toString(),
                         password: value2.toString(),
                         mNemonic: mNemonic,
-                        partialSeed: partialSeed
+                        walletAddress: walletAddress
                     })
 
                     // save
@@ -106,14 +106,14 @@ const crawlAllData = async () => {
     var workbook = new Excel.Workbook();
     var worksheet = workbook.addWorksheet("Sheet1");
 
-    worksheet.addRow(['username', 'password', 'mNemonic', 'partialSeed']);
+    worksheet.addRow(['username', 'password', 'mNemonic', 'walletAddress']);
 
     for (let i = 0; i < source.length; ++i) {
         worksheet.addRow([
             source[i].username,
             source[i].password,
             source[i].mNemonic,
-            source[i].partialSeed
+            source[i].walletAddress
         ]);
     }
 
